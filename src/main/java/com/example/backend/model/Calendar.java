@@ -1,44 +1,23 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
-import java.util.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
+@Table(name = "Calendar")
+@Setter
+@Getter
+
 public class Calendar {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @ElementCollection
-    private List<String> appointments = new ArrayList<>();
+    private String name;
 
-    public boolean addAppointment(String appointment) {
-        if (!appointments.contains(appointment)) {
-            appointments.add(appointment);
-            return true;
-        }
-        return false;
-    }
-
-    public boolean checkConflict(String appointment) {
-        return appointments.contains(appointment);
-    }
-
-    public boolean replaceAppointment(String oldApt, String newApt) {
-        int index = appointments.indexOf(oldApt);
-        if (index != -1) {
-            appointments.set(index, newApt);
-            return true;
-        }
-        return false;
-    }
-
-    public void joinGroupMeeting(String meetingId) {
-        appointments.add(meetingId);
-    }
-
-    public List<String> getAppointments() {
-        return appointments;
-    }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

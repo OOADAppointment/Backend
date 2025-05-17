@@ -20,15 +20,12 @@ public class UserService {
         return userRepo.findAll();
     }
 
-    public Optional<User> getUserById(String id) {
-        return userRepo.findById(id);
-    }
 
     public User saveUser(User user) {
         return userRepo.save(user);
     }
 
-    public void deleteUser(String id) {
+    public void deleteUser(Integer id) {
         userRepo.deleteById(id);
     }
 }

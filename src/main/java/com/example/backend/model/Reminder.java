@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
-@Table(name = "GroupMeeting")
-@Data
-@Getter
-@Setter
+import java.time.LocalDateTime;
 
-public class GroupMeeting {
+@Entity
+@Table(name = "Reminder")
+@Data
+@Setter
+@Getter
+
+public class Reminder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -20,7 +22,8 @@ public class GroupMeeting {
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "reminder_time")
+    private LocalDateTime reminderTime;
+
+    private String messenger;
 }
