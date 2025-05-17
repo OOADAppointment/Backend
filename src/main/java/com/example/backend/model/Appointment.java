@@ -7,6 +7,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "Appointment")
 @Data
@@ -18,6 +20,10 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(nullable = false, name = "title")
+    private String title;
+
+    @Column(name = "location")
     private String location;
 
     @Column(name = "start_time")
@@ -28,7 +34,9 @@ public class Appointment {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonBackReference
     private User user;
+
 
     @Column(name = "is_group_meeting")
     private Boolean isGroupMeeting;

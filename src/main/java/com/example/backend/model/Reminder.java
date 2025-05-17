@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @Data
 @Setter
 @Getter
-
 public class Reminder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,4 +25,7 @@ public class Reminder {
     private LocalDateTime reminderTime;
 
     private String messenger;
+
+    @Column(name = "message")
+    private String message;
 }

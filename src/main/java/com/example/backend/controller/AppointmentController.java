@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.AppointmentDTO;
+import com.example.backend.dto.JoinGroupMeetingDTO;
 import com.example.backend.model.Appointment;
 import com.example.backend.service.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,16 +16,6 @@ import java.util.Optional;
 public class AppointmentController {
     @Autowired private AppointmentService appointmentService;
 
-    @PostMapping("/add")
-    public ResponseEntity<String> addAppointment(@RequestBody AppointmentDTO appointmentDTO) {
-        String result = appointmentService.addAppointment(appointmentDTO);
-        if (result.contains("successfully") || result.contains("added to")) {
-            return ResponseEntity.ok(result);
-        } else {
-            return ResponseEntity.badRequest().body(result);
-        }
-    }
-
     @GetMapping
     public List<Appointment> getAllAppointments() {
         return appointmentService.getAllAppointments();
@@ -37,10 +28,33 @@ public class AppointmentController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/check-or-create")
+    public ResponseEntity<?> checkOrCreateAppointment(@RequestBody AppointmentDTO dto) {
+        return ResponseEntity.ok(appointmentService.checkOrCreateAppointment(dto));
+    }
+
+    @PostMapping("/join-group-meeting")
+    public ResponseEntity<?> joinGroupMeeting(@RequestBody JoinGroupMeetingDTO dto) {
+        appointmentService.joinGroupMeeting(dto.getUserId(), dto.getAppointmentId());
+        return ResponseEntity.ok("Joined group meeting successfully");
+    }
+
+
+
     @PutMapping("update/{id}")
     public ResponseEntity<String> updateAppointment(@PathVariable Integer id, @RequestBody AppointmentDTO appointmentDTO) {
         String result = appointmentService.updateAppointment(id, appointmentDTO);
         if (result.contains("successfully")) {
+            return ResponseEntity.ok(result);
+        } else {
+            return ResponseEntity.badRequest().body(result);
+        }
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<String> addAppointment(@RequestBody AppointmentDTO appointmentDTO) {
+        String result = appointmentService.addAppointment(appointmentDTO);
+        if (result.contains("successfully") || result.contains("added to")) {
             return ResponseEntity.ok(result);
         } else {
             return ResponseEntity.badRequest().body(result);
@@ -56,4 +70,11 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(result);
         }
     }
+
+
+
+
+
+
+    
 }

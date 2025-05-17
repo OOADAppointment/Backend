@@ -5,7 +5,6 @@ import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -15,7 +14,17 @@ public class UserService {
     public UserService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
-
+    public User getUserById(Integer id) {
+        return userRepo.findById(id).orElse(null);
+    }
+    public User getUserByUsername(String username) {
+        return userRepo.findByUsername(username).orElse(null);
+    }
+    public User checkAccount(String username, String password) {
+        return userRepo.findByUsername(username)
+                .filter(user -> user.getPassword().equals(password))
+                .orElse(null);
+    }
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }

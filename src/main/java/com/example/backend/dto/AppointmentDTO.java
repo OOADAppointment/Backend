@@ -1,23 +1,33 @@
 package com.example.backend.dto;
-
-
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@Getter
-@Setter
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppointmentDTO {
-    private String name;
-    private String location;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+
+    @NotNull
     private Integer userId;
+
+    @NotBlank
+    private String title;
+
+    private String location;
+
+    @NotNull
+    private LocalDateTime startTime;
+
+    @NotNull
+    private LocalDateTime endTime;
+
     private Boolean isGroupMeeting;
+
     private List<LocalDateTime> reminderTimes;
 }

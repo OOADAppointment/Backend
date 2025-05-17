@@ -1,5 +1,5 @@
 package com.example.backend.service;
 
-public class CalenderService {
+public class GroupMeetingService {
     
 }
