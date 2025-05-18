@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -41,4 +40,8 @@ public class Appointment {
 
     @Column(name = "is_group_meeting")
     private Boolean isGroupMeeting;
+
+    @OneToOne(mappedBy = "appointment", cascade = CascadeType.ALL)
+    private GroupMeeting groupMeeting;
+
 }

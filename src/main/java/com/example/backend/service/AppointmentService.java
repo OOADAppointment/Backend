@@ -60,8 +60,8 @@ public class AppointmentService {
         }
 
         // Nếu không có -> tạo mới appointment
-        User user = userRepository.findById(dto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByUsername(dto.getOwner())
+            .orElseThrow(() -> new RuntimeException("Owner user not found"));
 
         Appointment appointment = new Appointment();
         appointment.setUser(user);
@@ -77,9 +77,21 @@ public class AppointmentService {
         if (dto.getIsGroupMeeting() != null && dto.getIsGroupMeeting()) {
             GroupMeeting groupMeeting = new GroupMeeting();
             groupMeeting.setAppointment(saved);
-            groupMeeting.setParticipants(new ArrayList<>(List.of(user)));
+
+            List<User> participants = new ArrayList<>();
+            // Thêm owner
+            participants.add(user);
+
+            // Thêm members khác nếu có
+            if (dto.getMembers() != null && !dto.getMembers().isEmpty()) {
+                List<User> members = userRepository.findAllByUsernameIn(dto.getMembers());
+                participants.addAll(members);
+            }
+
+            groupMeeting.setParticipants(participants);
             groupMeetingRepository.save(groupMeeting);
         }
+
 
         return Map.of("status", "CREATED", "appointmentId", saved.getId());
     }
@@ -103,77 +115,6 @@ public class AppointmentService {
     public List<Appointment> getConflictingAppointments(Integer userId, LocalDateTime startTime, LocalDateTime endTime) {
         return appointmentRepository.findConflictingAppointments(userId, startTime, endTime);
     }
-
-    public String addAppointment(AppointmentDTO dto) {
-        if (dto.getTitle() == null || dto.getTitle().trim().isEmpty()) {
-            return "Appointment name cannot be empty";
-        }
-        if (dto.getEndTime().isBefore(dto.getStartTime())) {
-            return "End time cannot be before start time";
-        }
-
-        List<Appointment> overlapping = appointmentRepository
-                .findByUser_IdAndStartTimeLessThanEqualAndEndTimeGreaterThanEqual(
-                        dto.getUserId(), dto.getEndTime(), dto.getStartTime());
-
-        if (!overlapping.isEmpty()) {
-            return "Conflict: You already have an appointment during this time.";
-        }
-
-        // Tạo Appointment mới
-        Appointment appointment = new Appointment();
-        appointment.setLocation(dto.getLocation());
-        appointment.setStartTime(dto.getStartTime());
-        appointment.setEndTime(dto.getEndTime());
-        appointment.setTitle(dto.getTitle());
-        appointment.setUser(userRepository.findById(dto.getUserId()).orElse(null));
-        appointment.setIsGroupMeeting(dto.getIsGroupMeeting());
-        appointmentRepository.save(appointment);
-
-        // Thêm reminder nếu có
-        if (dto.getReminderTimes() != null) {
-            for (LocalDateTime time : dto.getReminderTimes()) {
-                Reminder r = new Reminder();
-                r.setAppointment(appointment);
-                r.setReminderTime(time);
-                r.setUser(appointment.getUser());
-                reminderRepository.save(r);
-            }
-        }
-
-        // Kiểm tra xem có group meeting trùng nào không
-        List<GroupMeeting> existingMeetings = groupMeetingRepository.findAll();
-        for (GroupMeeting gm : existingMeetings) {
-            Appointment a = gm.getAppointment();
-            if (a.getIsGroupMeeting()
-                    && a.getStartTime().equals(dto.getStartTime())
-                    && a.getEndTime().equals(dto.getEndTime())
-                    && a.getLocation().equals(dto.getLocation())) {
-
-                // Nếu đã tồn tại GroupMeeting, thêm user mới vào participants
-                User user = appointment.getUser();
-                if (!gm.getParticipants().contains(user)) {
-                    gm.getParticipants().add(user);
-                    groupMeetingRepository.save(gm);
-                }
-
-                return "You were added to an existing group meeting.";
-            }
-        }
-
-        // Nếu chưa có group meeting nào trùng thì tạo mới
-        if (dto.getIsGroupMeeting()) {
-            GroupMeeting newGm = new GroupMeeting();
-            newGm.setAppointment(appointment);
-            List<User> participants = new ArrayList<>();
-            participants.add(appointment.getUser());
-            newGm.setParticipants(participants);
-            groupMeetingRepository.save(newGm);
-        }
-
-        return "Appointment added successfully.";
-    }
-
 
     public String updateAppointment(Integer id, AppointmentDTO dto) {
         Optional<Appointment> optionalAppointment = appointmentRepository.findById(id);

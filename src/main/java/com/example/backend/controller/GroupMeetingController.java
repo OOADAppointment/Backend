@@ -1,6 +1,5 @@
 package com.example.backend.controller;
 
-import com.example.backend.dto.AppointmentResponseDTO;
 import com.example.backend.dto.JoinGroupMeetingDTO;
 import com.example.backend.model.Appointment;
 import com.example.backend.model.GroupMeeting;
@@ -12,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/group-meetings")

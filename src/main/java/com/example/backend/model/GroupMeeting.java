@@ -18,9 +18,8 @@ public class GroupMeeting {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    // Một cuộc họp nhóm liên kết với 1 Appointment
-    @ManyToOne
-    @JoinColumn(name = "appointment_id")
+    @OneToOne
+    @JoinColumn(name = "appointment_id", referencedColumnName = "id")
     private Appointment appointment;
 
     // Danh sách người tham gia cuộc họp nhóm
@@ -34,9 +33,10 @@ public class GroupMeeting {
     
     @JsonIgnore
     private List<User> participants;
-
+    
     public boolean isEmpty() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
     }
+    
 }

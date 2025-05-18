@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 public class AppointmentDTO {
 
     @NotNull
-    private Integer userId;
-
+    private String owner;
     @NotBlank
     private String title;
 
@@ -28,6 +27,6 @@ public class AppointmentDTO {
     private LocalDateTime endTime;
 
     private Boolean isGroupMeeting;
-
+    private List<String> members;
     private List<LocalDateTime> reminderTimes;
 }
