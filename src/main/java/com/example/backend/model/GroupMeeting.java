@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "group_meetings")
 @Getter
@@ -28,5 +30,7 @@ public class GroupMeeting {
         joinColumns = @JoinColumn(name = "group_meeting_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
+    
+    @JsonIgnore
     private List<User> participants;
 }
