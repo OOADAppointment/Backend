@@ -24,7 +24,9 @@ public class Reminder {
     @Column(name = "reminder_time")
     private LocalDateTime reminderTime;
 
-    private String messenger;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "message")
     private String message;

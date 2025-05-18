@@ -70,11 +70,4 @@ public class AppointmentController {
             return ResponseEntity.badRequest().body(result);
         }
     }
-
-
-
-
-
-
-    
 }

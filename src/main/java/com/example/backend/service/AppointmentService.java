@@ -136,7 +136,7 @@ public class AppointmentService {
                 Reminder r = new Reminder();
                 r.setAppointment(appointment);
                 r.setReminderTime(time);
-                r.setMessenger("System Notification");
+                r.setUser(appointment.getUser());
                 reminderRepository.save(r);
             }
         }
