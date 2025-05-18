@@ -1,6 +1,7 @@
 package com.example.backend.controller;
 
 import com.example.backend.dto.AppointmentDTO;
+import com.example.backend.dto.AppointmentResponseDTO;
 import com.example.backend.dto.JoinGroupMeetingDTO;
 import com.example.backend.model.Appointment;
 import com.example.backend.service.AppointmentService;
@@ -17,9 +18,21 @@ public class AppointmentController {
     @Autowired private AppointmentService appointmentService;
 
     @GetMapping
-    public List<Appointment> getAllAppointments() {
-        return appointmentService.getAllAppointments();
+    public List<AppointmentResponseDTO> getAllAppointments() {
+        List<Appointment> appointments = appointmentService.getAllAppointments();
+        return appointments.stream().map(a -> {
+            AppointmentResponseDTO dto = new AppointmentResponseDTO();
+            dto.setId(a.getId());
+            dto.setTitle(a.getTitle());
+            dto.setLocation(a.getLocation());
+            dto.setStartTime(a.getStartTime());
+            dto.setEndTime(a.getEndTime());
+            dto.setIsGroupMeeting(a.getIsGroupMeeting());
+            dto.setUserId(a.getUser().getId()); // Lấy userId duy nhất
+            return dto;
+        }).toList();
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Appointment> getAppointmentById(@PathVariable Integer id) {
