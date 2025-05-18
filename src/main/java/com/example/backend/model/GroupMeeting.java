@@ -25,6 +25,7 @@ public class GroupMeeting {
 
     // Danh sách người tham gia cuộc họp nhóm
     @ManyToMany
+
     @JoinTable(
         name = "group_meeting_participants",
         joinColumns = @JoinColumn(name = "group_meeting_id"),
