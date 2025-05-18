@@ -98,20 +98,21 @@ public class AppointmentService {
     }
 
     public void joinGroupMeeting(JoinGroupMeetingDTO dto) {
-        User user = userRepository.findByUsername(dto.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findByUsername(dto.getUsername())
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Appointment appointment = appointmentRepository.findById(dto.getAppointmentId())
-                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    Appointment appointment = appointmentRepository.findById(dto.getId()) // Dùng dto.getId()
+            .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
-        GroupMeeting groupMeeting = groupMeetingRepository.findByAppointment(appointment)
-                .orElseThrow(() -> new RuntimeException("GroupMeeting not found"));
+    GroupMeeting groupMeeting = groupMeetingRepository.findByAppointment(appointment)
+            .orElseThrow(() -> new RuntimeException("GroupMeeting not found"));
 
-        if (!groupMeeting.getParticipants().contains(user)) {
-            groupMeeting.getParticipants().add(user);
-            groupMeetingRepository.save(groupMeeting);
-        }
+    if (!groupMeeting.getParticipants().contains(user)) {
+        groupMeeting.getParticipants().add(user);
+        groupMeetingRepository.save(groupMeeting);
     }
+}
+
 
     public List<Appointment> getConflictingAppointments(Integer userId, LocalDateTime startTime, LocalDateTime endTime) {
         return appointmentRepository.findConflictingAppointments(userId, startTime, endTime);
