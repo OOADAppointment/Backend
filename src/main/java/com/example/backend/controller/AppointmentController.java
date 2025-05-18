@@ -35,11 +35,27 @@ public class AppointmentController {
 
 
     @GetMapping("/{id}")
-    public ResponseEntity<Appointment> getAppointmentById(@PathVariable Integer id) {
-        Optional<Appointment> appointment = appointmentService.getAppointmentById(id);
-        return appointment.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<AppointmentResponseDTO> getAppointmentById(@PathVariable Integer id) {
+        Optional<Appointment> optional = appointmentService.getAppointmentById(id);
+
+        if (optional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Appointment appointment = optional.get();
+
+        AppointmentResponseDTO dto = new AppointmentResponseDTO();
+        dto.setId(appointment.getId());
+        dto.setTitle(appointment.getTitle());
+        dto.setLocation(appointment.getLocation());
+        dto.setStartTime(appointment.getStartTime());
+        dto.setEndTime(appointment.getEndTime());
+        dto.setIsGroupMeeting(appointment.getIsGroupMeeting());
+        dto.setUserId(appointment.getUser().getId());
+
+        return ResponseEntity.ok(dto);
     }
+
 
     @PostMapping("/check-or-create")
     public ResponseEntity<?> checkOrCreateAppointment(@RequestBody AppointmentDTO dto) {

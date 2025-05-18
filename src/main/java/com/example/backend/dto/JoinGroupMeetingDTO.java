@@ -1,13 +1,15 @@
 package com.example.backend.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
 
-@Data // Tự sinh getter, setter, toString, equals, hashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 public class JoinGroupMeetingDTO {
-    private Integer userId;
+    private Integer id;
     private Integer appointmentId;
+    private String title;
+    private String location;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Integer userId;
 }

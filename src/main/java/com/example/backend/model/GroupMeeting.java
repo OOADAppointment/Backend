@@ -34,4 +34,9 @@ public class GroupMeeting {
     
     @JsonIgnore
     private List<User> participants;
+
+    public boolean isEmpty() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isEmpty'");
+    }
 }

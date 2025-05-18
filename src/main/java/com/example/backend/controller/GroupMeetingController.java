@@ -1,5 +1,8 @@
 package com.example.backend.controller;
 
+import com.example.backend.dto.AppointmentResponseDTO;
+import com.example.backend.dto.JoinGroupMeetingDTO;
+import com.example.backend.model.Appointment;
 import com.example.backend.model.GroupMeeting;
 import com.example.backend.model.User;
 import com.example.backend.service.GroupMeetingService;
@@ -9,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/group-meetings")
@@ -22,15 +26,44 @@ public class GroupMeetingController {
 
     // Get all group meetings
     @GetMapping
-    public List<GroupMeeting> getAllGroupMeetings() {
-        return groupMeetingService.getAllGroupMeetings();
-    }
+    public List<JoinGroupMeetingDTO> getAllGroupMeetings() {
+        List<GroupMeeting> meetings = groupMeetingService.getAllGroupMeetings();
 
-    // Get group meeting by ID
+        return meetings.stream().map(gm -> {
+            Appointment appt = gm.getAppointment();
+
+            JoinGroupMeetingDTO dto = new JoinGroupMeetingDTO();
+            dto.setId(gm.getId());
+            dto.setAppointmentId(appt.getId());
+            dto.setTitle(appt.getTitle());
+            dto.setLocation(appt.getLocation());
+            dto.setStartTime(appt.getStartTime());
+            dto.setEndTime(appt.getEndTime());
+            dto.setUserId(appt.getUser().getId());
+
+            return dto;
+        }).toList();
+    }
     @GetMapping("/{id}")
-    public ResponseEntity<GroupMeeting> getGroupMeetingById(@PathVariable Integer id) {
-        GroupMeeting groupMeeting = groupMeetingService.getGroupMeetingById(id);
-        return groupMeeting != null ? ResponseEntity.ok(groupMeeting) : ResponseEntity.notFound().build();
+    public ResponseEntity<JoinGroupMeetingDTO> getGroupMeetingById(@PathVariable Integer id) {
+        GroupMeeting gm = groupMeetingService.getGroupMeetingById(id);
+
+        if (gm == null) {
+            return ResponseEntity.notFound().build(); // Trả về 404 nếu không tìm thấy
+        }
+
+        Appointment appt = gm.getAppointment();
+        JoinGroupMeetingDTO dto = new JoinGroupMeetingDTO();
+
+        dto.setId(gm.getId());
+        dto.setAppointmentId(appt.getId());
+        dto.setTitle(appt.getTitle());
+        dto.setLocation(appt.getLocation());
+        dto.setStartTime(appt.getStartTime());
+        dto.setEndTime(appt.getEndTime());
+        dto.setUserId(appt.getUser().getId());
+
+        return ResponseEntity.ok(dto);
     }
 
     // Create new group meeting
