@@ -1,6 +1,7 @@
 package com.example.backend.service;
 import com.example.backend.model.User;
 import com.example.backend.dto.AppointmentDTO;
+import com.example.backend.dto.JoinGroupMeetingDTO;
 import com.example.backend.model.Appointment;
 import com.example.backend.model.GroupMeeting;
 import com.example.backend.model.Reminder;
@@ -96,11 +97,11 @@ public class AppointmentService {
         return Map.of("status", "CREATED", "appointmentId", saved.getId());
     }
 
-    public void joinGroupMeeting(Integer userId, Integer appointmentId) {
-        User user = userRepository.findById(userId)
+    public void joinGroupMeeting(JoinGroupMeetingDTO dto) {
+        User user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Appointment appointment = appointmentRepository.findById(appointmentId)
+        Appointment appointment = appointmentRepository.findById(dto.getAppointmentId())
                 .orElseThrow(() -> new RuntimeException("Appointment not found"));
 
         GroupMeeting groupMeeting = groupMeetingRepository.findByAppointment(appointment)

@@ -89,7 +89,7 @@ public class AppointmentController {
 
     @PostMapping("/join-group-meeting")
     public ResponseEntity<?> joinGroupMeeting(@RequestBody JoinGroupMeetingDTO dto) {
-        appointmentService.joinGroupMeeting(dto.getUserId(), dto.getAppointmentId());
+        appointmentService.joinGroupMeeting(dto);
         return ResponseEntity.ok("Joined group meeting successfully");
     }
 

@@ -12,4 +12,5 @@ public class JoinGroupMeetingDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer userId;
+    private String username;
 }
